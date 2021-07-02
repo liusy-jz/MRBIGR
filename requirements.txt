@@ -1,0 +1,7 @@
+cython
+pyranges
+pandas_plink
+numpy
+pandas
+scipy
+sklearn

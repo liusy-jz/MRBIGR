@@ -454,7 +454,7 @@ def mr(args, log):
 		g = g.reindex(ril)
 		mTrait = mTrait.reindex(ril)
 		pTrait = pTrait.reindex(ril)
-		res = mmr.MR_parallel(qtl, mTrait, pTrait, g, args.p, args.pvalue)
+		res = mmr.MR_parallel(qtl, mTrait, pTrait, g, args.thread, args.pvalue)
 		if args.type == 'direct':
 			coloc_df = mmr.target_type(qtl, tf, target)
 			res_tmp = pd.DataFrame()
@@ -465,10 +465,10 @@ def mr(args, log):
 		log.log('Successfully perform Mendelian randomization analysis using linear model')
 	if args.mlm:
 		log.log('perform Mendelian Randomization through mixed linear model')
-		mmr.generate_geno_batch(qtl, mTrait, pTrait, args.g, args.p, 'tmp_mr_bed', 'tmp_mr_rs')
-		mmr.calc_MLM_effect('tmp_mr_bed', pTrait, args.p, args.g)
+		mmr.generate_geno_batch(qtl, mTrait, pTrait, args.g, args.thread, 'tmp_mr_bed', 'tmp_mr_rs')
+		mmr.calc_MLM_effect('tmp_mr_bed', pTrait, args.thread, args.g)
 		mTrait_effect, pTrait_effect, pTrait_se = mmr.get_MLM_effect_parallell('./output', mTrait, pTrait, args.p)
-		res = mmr.MR_MLM_parallel(qtl, mTrait_effect, pTrait_effect, pTrait_se, args.p, args.pvalue)
+		res = mmr.MR_MLM_parallel(qtl, mTrait_effect, pTrait_effect, pTrait_se, args.thread, args.pvalue)
 		if args.type == 'direct':
 			coloc_df = mmr.target_type(qtl, tf, target)
 			res_tmp = pd.DataFrame()

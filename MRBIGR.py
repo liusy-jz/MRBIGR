@@ -437,6 +437,7 @@ def mr(args, log):
 	if qtl.empty:
 		log.log('the exposure QTL file {} is empty and software is terminated.'.format(args.qtl))
 		sys.exit()
+	mTrait = mTrait[qtl.phe_name.unique()]
 	if not os.path.exists(args.g+'.bed'):
 		raise ArgsError('the plink bed format genotype file {} is not exists.'.format(args.g))
 	if args.lm and args.mlm:
@@ -467,7 +468,7 @@ def mr(args, log):
 		log.log('perform Mendelian Randomization through mixed linear model')
 		mmr.generate_geno_batch(qtl, mTrait, pTrait, args.g, args.thread, 'tmp_mr_bed', 'tmp_mr_rs')
 		mmr.calc_MLM_effect('tmp_mr_bed', pTrait, args.thread, args.g)
-		mTrait_effect, pTrait_effect, pTrait_se = mmr.get_MLM_effect_parallell('./output', mTrait, pTrait, args.p)
+		mTrait_effect, pTrait_effect, pTrait_se = mmr.get_MLM_effect_parallell('./output', mTrait, pTrait, args.thread)
 		res = mmr.MR_MLM_parallel(qtl, mTrait_effect, pTrait_effect, pTrait_se, args.thread, args.pvalue)
 		if args.type == 'direct':
 			coloc_df = mmr.target_type(qtl, tf, target)

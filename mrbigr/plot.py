@@ -19,7 +19,7 @@ def forest_plot(MR_res, mTrait, snp, o):
             d$std <- sqrt((d$effect) ^ 2 / d[, 5])
             d$min <- d$effect - d$std
             d$max <- d$effect + d$std
-        
+
             # effect
             ggplot(data=d, aes(x=effect, y=pTrait, color=pTrait)) +
             geom_vline(xintercept=0, linetype="dashed", color="gray", size=1) +
@@ -147,6 +147,7 @@ def scatter_plot_ps(d, g, o):
     robjects.r('''
         p <- function(d, g, o){
             suppressMessages(library(ggplot2))
+            d <- d[c(1,2,3)]
             if(nrow(g)!=0){
                 d$group <- g[match(d[, 1], g[, 1]), 2]
             }else{
@@ -238,7 +239,7 @@ def box_plot(d, g, o):
               )+
               xlab('')
             ggsave(paste(o, 'boxplot.pdf', sep='_'), width = width, height = 3)
-        } 
+        }
     ''')
     p = robjects.r('p')
     try:

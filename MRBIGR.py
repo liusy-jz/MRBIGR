@@ -150,7 +150,7 @@ def geno(args,log):
 			tsne = mg.tsne(args.g+'.bed', dim)
 			tsne.to_csv(args.o +'_tsne.csv', na_rep='NA')
 			log.log('t-SNE Analysis is done.')
-		
+
 		if args.tree:
 			log.log('Begin to build a genotype ML-tree using FastTree...')
 			ft = mg.fasttree(args.g, args.o)
@@ -246,7 +246,7 @@ def pheno(args,log):
 		pca_phe_idx = pca.index.intersection(phe.index)
 		phe = mp.trait_correct(pca.reindex(pca_phe_idx), phe.reindex(pca_phe_idx))
 		log.log('Successfully corrected phenotype data using PCA file.')
-	
+
 	if args.merge:
 		mm = 'mean'
 		if args.mm:
@@ -279,7 +279,7 @@ def gwas(args, log):
 		g = mw.read_genotype(args.g)
 		if g is None:
 			raise FileTypeError('{0}.bed is not a plink bed format file or {0}.bim file and {0}.fam file is not in the same folder with {0}.bed, or {0}.bed is empty.'.format(args.g))
-		
+
 		log.log('Begin GWAS analysis')
 		thread = int(1)
 		if args.thread:
@@ -341,7 +341,7 @@ def gwas(args, log):
 		qtl_anno = mw.qtl_anno(qtl, anno)
 		qtl_anno.to_csv(args.o+'.qtl_anno.csv',index=False)
 		log.log('QTL annotation is done.')
-	
+
 	if args.visual:
 		log.log('Begin plot manhattan-plot and qqplot...')
 		input = 'output'
@@ -616,10 +616,10 @@ def plot(args, log):
 	if args.plot_type == 'scatter_mr':
 		log.log('begin plotting Mendelian Randomization scatter plot')
 		for mTrait in i['mTrait'].unique():
-			mr_sub = i.loc[mr.mTrait == mTrait, :]
+			mr_sub = i.loc[i.mTrait == mTrait, :]
 			for snp in mr_sub['snp'].unique():
 				d = mr_sub.loc[mr_sub.snp == snp, :]
-				s = mplt.scatter_plot(d, group, mTrait, snp, args.o)
+				s = mplt.scatter_plot_mr(d, group, mTrait, snp, args.o)
 				if not s:
 					log.log('mTrait {} with snp {} scatter plot is failed'.format(mTrait, snp))
 	if args.plot_type == 'hist':

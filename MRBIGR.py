@@ -490,7 +490,7 @@ def net(args, log):
 		log.log('the pairwise Mendelian Randomization analysis file {} is empty and software is terminated.'.format(args.mr))
 		sys.exit()
 	log.log('begin calculate edge weight...')
-	ew = mnet.get_weight(mr)
+	ew = mnet.get_weight(mr, args.pvalue)
 	ew.columns = ['row', 'col', 'weight']
 	log.log('begin network analysis and identify module...')
 	ew.to_csv(args.o+'.edge_list', sep='\t', index=False, header=None)
@@ -768,6 +768,7 @@ parser_mr.add_argument('-o', default='mr_out', metavar='[mr_out]',
 parser_net = subparsers.add_parser('net', help='perform network analysis', usage='%(prog)s [options]')
 parser_net.add_argument('-mr', metavar='', help='pairwise Mendelian Randomization analysis result')
 parser_net.add_argument('-module_size', metavar='[5]', default=5, type=int, help='minimal size of genes in a module,default 5')
+parser_net.add_argument('-pvalue', metavar='[1e-3]', default=1e-3, type=float, help='pvalue cutoff for MR-based network analysis,default 1e-3')
 parser_net.add_argument('-plot', action='store_true', help='plot network of each module')
 parser_net.add_argument('-o', default='net_out', metavar='[net_out]', help='The prefix of the output file, default go_out')
 

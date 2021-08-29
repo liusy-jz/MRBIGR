@@ -13,10 +13,12 @@ import re
 pandas2ri.activate()
 
 
-def get_weight(pvalue_list):
+def get_weight(pvalue_list, pvalue):
     pvalue_list = pvalue_list[['mTrait', 'pTrait', 'pvalue']]
     pvalue_matrix = pd.pivot_table(pvalue_list, index='mTrait', columns='pTrait', values='pvalue', fill_value=1)
-    pvalue_matrix = -np.log10(pvalue_matrix) - 3
+    id_list = list(set(pvalue_list['mTrait']) | set(pvalue_list['pTrait']))
+    pvalue_matrix = pvalue_matrix.reindex(id_list)[id_list].fillna(1)
+    pvalue_matrix = -np.log10(pvalue_matrix) + log10(pvalue)
     pvalue_matrix[pvalue_matrix < 0] = 0
     weight = 1 - expon.pdf(pvalue_matrix)
     weight = (weight + weight.T) / 2
@@ -79,7 +81,7 @@ def hub_identify(edge_weight, cluster_one_res):
 def module_network_plot(edge_weight, cluster_one_res, hub_res, prefix):
     robjects.r('''
         network_plot <- function(m_ew, m_hub, fn){
-            options(warn = - 1) 
+            options(warn = - 1)
             suppressMessages(library(network))
             suppressMessages(library(ggplot2))
             net <- network(m_ew, matrix.type = 'edgelist', directed = F)

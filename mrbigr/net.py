@@ -18,7 +18,7 @@ def get_weight(pvalue_list, pvalue):
     pvalue_matrix = pd.pivot_table(pvalue_list, index='mTrait', columns='pTrait', values='pvalue', fill_value=1)
     id_list = list(set(pvalue_list['mTrait']) | set(pvalue_list['pTrait']))
     pvalue_matrix = pvalue_matrix.reindex(id_list)[id_list].fillna(1)
-    pvalue_matrix = -np.log10(pvalue_matrix) + log10(pvalue)
+    pvalue_matrix = -np.log10(pvalue_matrix) + np.log10(pvalue)
     pvalue_matrix[pvalue_matrix < 0] = 0
     weight = 1 - expon.pdf(pvalue_matrix)
     weight = (weight + weight.T) / 2
